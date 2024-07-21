@@ -1,32 +1,26 @@
-const express = require("express");
+const express = require('express');
 const cors = require("cors");
-const { db } = require("./db/db");
-require("dotenv").config();
-
+const {db} = require("./db/db");
+const {readdirSync} = require ('fs');
+const { route } = require('./routes/transaction');
 const app = express();
+
+require('dotenv').config();
 
 const PORT = process.env.PORT;
 
-// middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors())
 
-// GLOBAL ERROR HANDLER
-app.use((err, res, req, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
+readdirSync('./routes').map((route) => app.use('/api/v1', require('./routes/' + route)))
 
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-});
-
-const server = () => {
-  db();
-  app.listen(PORT, () => {
-    console.log(`Listening in PORT ${PORT}...`);
-  });
-};
+const server = () =>{
+    db(
+        
+    )
+    app.listen(PORT, ()=>{
+        console.log("You are listenig to port:", PORT);
+    })
+}
 
 server();
